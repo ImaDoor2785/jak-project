@@ -1,5 +1,5 @@
 # Top Level CMakeLists.txt
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.12)
 
 set(CMAKE_CXX_STANDARD 17)
 project(jak)
@@ -22,6 +22,13 @@ if(STATICALLY_LINK)
 else()
     set(BUILD_SHARED_LIBS ON)
     set(BUILD_STATIC_LIBS OFF)
+endif()
+
+# For clangd
+if (EXISTS "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json" )
+    configure_file(
+        "${CMAKE_CURRENT_BINARY_DIR}/compile_commands.json"
+        "${PROJECT_SOURCE_DIR}/build/compile_commands.json")
 endif()
 
 # For clangd
@@ -195,9 +202,6 @@ if(WIN32)
 elseif(APPLE)
     set(CURL_USE_SECTRANSP ON) # native macOS SSL support
 else()
-    if(STATICALLY_LINK)
-        set(OPENSSL_USE_STATIC_LIBS TRUE)
-    endif()
     set(CURL_USE_OPENSSL ON) # not native, but seems to be the best choice for linux
 endif()
 include_directories(third-party/curl/include)
@@ -240,6 +244,25 @@ add_subdirectory(lsp)
 # build libco and zstd
 build_third_party_lib(libco libco)
 build_third_party_lib(zstd libzstd_static)
+
+
+# MOD BASE
+#add_subdirectory(third-party/freetype EXCLUDE_FROM_ALL)
+#set (FREETYPE_INCLUDE_DIRS= "third-party/freetype/")
+#set (FREETYPE_LIBRARY= "third-party/freetype/lib/")
+
+
+set(SFML_BUILD_WINDOW OFF)
+set(SFML_BUILD_GRAPHICS OFF)
+set(SFML_BUILD_NETWORK OFF)
+#add_subdirectory(third-party/SFML EXCLUDE_FROM_ALL)
+#include_directories(third-party/SFML/include)
+#include_directories(third-party/SFML/lib)
+
+
+
+
+
 
 # build SDL
 include(SDLOptions)

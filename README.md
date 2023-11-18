@@ -305,7 +305,7 @@ For other versions of the game, you will need to use a different `-set-decomp-<V
 task set-game-jak1
 task set-decomp-pal
 ```
-For Jak 2 you only need to `set-game-jak2` no need to change the decomp version.
+For Jak 2 you only need to `task set-game-jak2` no need to change the decomp version.
 
 > Run `task --list` to see the other available options
 

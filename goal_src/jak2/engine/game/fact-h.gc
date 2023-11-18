@@ -139,13 +139,13 @@
                       :buzzer-single-inc 1.0
                       :suck-bounce-dist (meters 18)
                       :suck-suck-dist (meters 7.5)
-                      :ammo-yellow-max 100.0
-                      :ammo-red-max 50.0
-                      :ammo-blue-max 100.0
+                      :ammo-yellow-max 10000.0
+                      :ammo-red-max 10000.0
+                      :ammo-blue-max 10000.0
                       :ammo-dark-max 10000.0
-                      :ammo-yellow-start 100.0
-                      :ammo-red-start 50.0
-                      :ammo-blue-start 100.0
+                      :ammo-yellow-start 10000.0
+                      :ammo-red-start 10000.0
+                      :ammo-blue-start 10000.0
                       :ammo-dark-start 10000.0
                       :shield-max 100.0
                       :shield-use-speed 10.0

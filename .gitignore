@@ -53,14 +53,24 @@ imgui.ini
 # website stuff
 node_modules/
 
-# texture replacements
-texture_replacements/*
-
 # generated cmake files
 svnrev.h
 common/versions/revision.h
 ci-artifacts/
-out/build/
+!out/
+out/*
+!out/build/
+out/build/*
+!out/build/Release
+out/build/Release/*
+!out/build/Release/bin/
+out/build/Release/bin/*
+!out/build/Release/bin/SDL2.dll
+!out/build/Release/bin/openal32.dll
+!out/build/Release/bin/extractor.exe
+!out/build/Release/bin/decompiler.exe
+!out/build/Release/bin/gk.exe
+!out/build/Release/bin/goalc.exe
 __pycache__/
 
 # sqlite stuff
@@ -73,8 +83,10 @@ __pycache__/
 # docs
 /jak1-*.json
 /jak2-*.json
-goal_src/jak2/.vscode/launch.json
-goal_src/jak2/.vscode/tasks.json
+
 /TODO.md
 unifont-15.0.03.ttf
+.vscode/settings.json
+out/jak2/fr3.rar
+
 *.diff
