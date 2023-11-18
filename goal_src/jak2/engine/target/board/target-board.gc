@@ -130,7 +130,7 @@
     :tiltv 131072.0
     :tiltvv 2621440.0
     :transv-max 143360.0
-    :target-speed 1024000.0
+    :target-speed 102400.0
     :seek0 0.5
     :seek90 0.5
     :seek180 0.5
