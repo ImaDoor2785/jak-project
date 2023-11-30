@@ -77,7 +77,8 @@ This gives us more freedom to write code how we want.
       (progress-new-generic-link-to-keybind-details-page (text-id progress-reassign-binds-keyboard)
           :should-disable? (lambda () (not (-> *pc-settings* keyboard-enabled?)))
           :device-type keyboard
-          :entries (l-analog-up l-analog-down l-analog-left l-analog-right r-analog-up r-analog-down r-analog-left r-analog-left r-analog-right select l3 r3 start dpad-up dpad-right dpad-down dpad-left l2 r2 l1 r1 triangle circle cross square)
+          :entries (l-analog-up l-analog-down l-analog-left l-analog-right r-analog-up r-analog-down r-analog-left r-analog-left r-analog-right
+                    select l3 r3 start dpad-up dpad-right dpad-down dpad-left l2 r2 l1 r1 triangle circle cross square)
           :confirm ((text-id progress-restore-defaults) (lambda () (pc-reset-bindings-to-defaults! 0 1))))
       (progress-new-generic-link-to-keybind-details-page (text-id progress-reassign-binds-mouse)
           :should-disable? (lambda () (not (-> *pc-settings* mouse-enabled?)))
@@ -291,10 +292,23 @@ This gives us more freedom to write code how we want.
                   (text-id language-name-spanish)
                   (text-id language-name-italian)
                   (text-id language-name-japanese)
+                  (text-id language-name-korean))
+      :get-item-index-fn (lambda () (-> *setting-control* user-default language))
+      :on-confirm (lambda ((index int)) (set! (-> *setting-control* user-default language) (the-as language-enum index))))
+    (new 'static 'menu-generic-carousel-option
+      :name (text-id progress-text-language)
+      :items (new 'static 'boxed-array :type text-id
+                  (text-id language-name-english)
+                  (text-id language-name-french)
+                  (text-id language-name-german)
+                  (text-id language-name-spanish)
+                  (text-id language-name-italian)
+                  (text-id language-name-japanese)
                   (text-id language-name-korean)
                   (text-id language-name-english-uk))
-      :get-item-index-fn (lambda () (-> *setting-control* user-default language))
-      :on-confirm (lambda ((index int)) (set! (-> *setting-control* user-default language) (the-as language-enum index))
+      :get-item-index-fn (lambda () (-> *pc-settings* text-language))
+      :on-confirm (lambda ((index int)) (set! (-> *pc-settings* text-language)
+                                              (the-as pc-language index))
                                         ;; NOTE - this doesn't actually work (naughty dog tried it too in their progress code)
                                         ;; fix it eventually
                                         (load-level-text-files (the-as int (-> *setting-control* user-default language)))))
