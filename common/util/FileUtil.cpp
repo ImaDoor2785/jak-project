@@ -684,6 +684,9 @@ std::vector<fs::path> find_files_in_dir(const fs::path& dir, const std::regex& p
 
 std::vector<fs::path> find_files_recursively(const fs::path& base_dir, const std::regex& pattern) {
   std::vector<fs::path> files = {};
+  if (!fs::exists(base_dir)) {
+    return files;
+  }
   for (auto& p : fs::recursive_directory_iterator(base_dir)) {
     if (p.is_regular_file()) {
       if (std::regex_match(p.path().filename().string(), pattern)) {
@@ -749,6 +752,26 @@ std::string make_screenshot_filepath(const GameVersion game_version, const std::
   const auto file_path = file_util::get_file_path({"screenshots", file_name});
   file_util::create_dir_if_needed_for_file(file_path);
   return file_path;
+}
+
+std::string get_majority_file_line_endings(const std::string& file_contents) {
+  size_t lf_count = 0;
+  size_t crlf_count = 0;
+
+  for (size_t i = 0; i < file_contents.size(); ++i) {
+    if (file_contents[i] == '\n') {
+      if (i > 0 && file_contents[i - 1] == '\r') {
+        crlf_count++;
+      } else {
+        lf_count++;
+      }
+    }
+  }
+
+  if (crlf_count > lf_count) {
+    return "\r\n";
+  }
+  return "\n";
 }
 
 }  // namespace file_util
