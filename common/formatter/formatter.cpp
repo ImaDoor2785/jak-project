@@ -288,8 +288,12 @@ std::vector<std::string> apply_formatting(const FormatterTreeNode& curr_node,
   }
 
   // Consolidate any lines if the configuration requires it
+  // TODO there is a hack here so that multi-line forms that are consolidated still line up properly
+  // i have to make consolidate a more first-class feature of the config
   if (curr_node.formatting_config.inline_until_index(form_lines)) {
     std::vector<std::string> new_form_lines = {};
+    const auto original_form_head_width = str_util::split(form_lines.at(0), '\n').at(0).length();
+    bool consolidating_lines = true;
     for (int i = 0; i < (int)form_lines.size(); i++) {
       if (i < curr_node.formatting_config.inline_until_index(form_lines)) {
         if (new_form_lines.empty()) {
@@ -298,7 +302,13 @@ std::vector<std::string> apply_formatting(const FormatterTreeNode& curr_node,
           new_form_lines.at(0) += fmt::format(" {}", form_lines.at(i));
         }
       } else {
-        new_form_lines.push_back(form_lines.at(i));
+        if (str_util::starts_with(form_lines.at(i), " ") && consolidating_lines) {
+          new_form_lines.push_back(fmt::format(
+              "{}{}", str_util::repeat(original_form_head_width, " "), form_lines.at(i)));
+        } else {
+          consolidating_lines = false;
+          new_form_lines.push_back(form_lines.at(i));
+        }
       }
     }
     form_lines = new_form_lines;
@@ -355,7 +365,11 @@ std::optional<std::string> formatter::format_code(const std::string& source) {
 
   // Get the root node of the syntax tree.
   TSNode root_node = ts_tree_root_node(tree.get());
-  if (ts_node_is_null(root_node) || ts_node_has_error(root_node)) {
+  if (ts_node_is_null(root_node)) {
+    lg::error("null root node");
+    return std::nullopt;
+  } else if (ts_node_has_error(root_node)) {
+    lg::error("grammar parsing error, go figure it out!");
     return std::nullopt;
   }
 
