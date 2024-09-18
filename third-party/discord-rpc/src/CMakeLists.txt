@@ -55,6 +55,9 @@ if(WIN32)
             /wd4946 # reinterpret_cast used between related classes
             /wd5027 # move assignment operator was implicitly defined as deleted
         )
+        if(CMAKE_VS_PLATFORM_NAME MATCHES "^[Aa][Rr][Mm]64$")
+            target_compile_definitions(discord-rpc PRIVATE "RAPIDJSON_ENDIAN=0") # RAPIDJSON_LITTLEENDIAN
+        endif()
     endif(MSVC)
     target_link_libraries(discord-rpc PRIVATE psapi advapi32)
 endif(WIN32)
@@ -120,9 +123,9 @@ if (${BUILD_SHARED_LIBS})
     target_compile_definitions(discord-rpc PRIVATE -DDISCORD_BUILDING_SDK)
 endif(${BUILD_SHARED_LIBS})
 
-if (CLANG_FORMAT_CMD)
+if (CLANG_FORMAT_CMD AND PROJECT_IS_TOP_LEVEL)
     add_dependencies(discord-rpc clangformat)
-endif(CLANG_FORMAT_CMD)
+endif(CLANG_FORMAT_CMD AND PROJECT_IS_TOP_LEVEL)
 
 # install
 
@@ -145,3 +148,17 @@ install(
 		"../include/discord_register.h"
     DESTINATION "include"
 )
+
+if(WIN32)
+    if(${BUILD_SHARED_LIBS})
+        install(
+            FILES $<TARGET_PDB_FILE:discord-rpc>
+            DESTINATION "bin"
+            OPTIONAL)
+    else(${BUILD_SHARED_LIBS})
+        install(
+            FILES "$<TARGET_LINKER_FILE_DIR:discord-rpc>/discord-rpc.pdb"
+            DESTINATION "lib"
+            OPTIONAL)
+    endif(${BUILD_SHARED_LIBS})
+endif(WIN32)
